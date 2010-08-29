@@ -1,5 +1,4 @@
 /* ShowOff JS Logic */
-
 var ShowOff = {};
 
 var preso_started = false
@@ -20,7 +19,7 @@ var shiftKeyActive = false
 var loadSlidesBool
 var loadSlidesPrefix
 
-function setupPreso(load_slides, prefix) {
+ function setupPreso(load_slides, prefix) {
   if (preso_started)
   {
      alert("already started")
@@ -244,20 +243,24 @@ function determineIncremental()
   })
 }
 
-function prevStep()
+function prevStep(slideNumber)
 {
-
   var event = jQuery.Event("showoff:prev");
   $(currentSlide).find(".content").trigger(event);
   if (event.isDefaultPrevented()) {
       return;
+  }
+  if(slideNumber !== undefined) { slidenum = slideNumber }
+
+  if(isPresenter == true) {
+    webSocket.send({action: 'prev', index: slidenum})
   }
 
   slidenum--
   return showSlide(true) // We show the slide fully loaded
 }
 
-function nextStep()
+function nextStep(slideNumber)
 {
   var event = jQuery.Event("showoff:next");
   $(currentSlide).find(".content").trigger(event);
@@ -265,10 +268,18 @@ function nextStep()
       return;
   }
 
+  if(slideNumber !== undefined) { slidenum = slideNumber }
+
   if (incrCurr >= incrSteps) {
+    if(isPresenter == true) {
+      webSocket.send({action: 'next', index: slidenum})
+    }
     slidenum++
     return showSlide()
   } else {
+    if(isPresenter == true) {
+      webSocket.send({action: 'next', index: slidenum})
+    }
     elem = incrElem.eq(incrCurr)
     if (incrCode && elem.hasClass('command')) {
       incrElem.eq(incrCurr).show().jTypeWriter({duration:1.0})
@@ -330,8 +341,10 @@ function keyDown(event)
     }
     if (key == 32) // space bar
     {
-      if (shiftKeyActive) { prevStep() }
-      else                { nextStep() }
+      if(isPresenter == true) {
+        if (shiftKeyActive) { prevStep() }
+        else                { nextStep() }
+      }
     }
     else if (key == 68) // 'd' for debug
     {
@@ -340,11 +353,11 @@ function keyDown(event)
     }
     else if (key == 37 || key == 33 || key == 38) // Left arrow, page up, or up arrow
     {
-      prevStep()
+      if(isPresenter == true) { prevStep() }
     }
     else if (key == 39 || key == 34 || key == 40) // Right arrow, page down, or down arrow
     {
-      nextStep()
+      if(isPresenter == true) { nextStep() }
     }
     else if (key == 82) // R for reload
     {
@@ -392,11 +405,15 @@ function keyUp(event) {
 
 
 function swipeLeft() {
-  nextStep()
+  if(isPresenter == true) {
+    nextStep()
+  }
 }
 
 function swipeRight() {
-  prevStep()
+  if(isPresenter == true) {
+    prevStep()
+  }
 }
 
 function ListMenu(s)
