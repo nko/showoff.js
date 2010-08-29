@@ -1,7 +1,7 @@
-scro-off
-========
+showoff.js
+==========
 
-An attempt to port [showoff][showoff] to [node][node].  It's written in [express][expressjs].
+Porting [showoff][showoff] to [node][node].  It's written in [express][expressjs].
 
 Running
 =======
@@ -11,10 +11,8 @@ Running
 Setup
 =====
 
-Follow the instructions on the [heroku beta-docs site][beta-docs] to create a project.  It should be as simple as:
-
-    % heroku create my-knockout-app --stack beech
-    % git push heroku master
+This is designed to be run locally and shared with people at a conference.  The
+person connecting from localhost drives everyone's experience with websockets. :)
 
 
 [node]: http://nodejs.org
